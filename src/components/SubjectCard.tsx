@@ -1,5 +1,5 @@
 
-import { Book, Calculator, Flask, Languages } from "lucide-react";
+import { Book, Calculator, Beaker, Languages } from "lucide-react";
 import { Subject } from "../types";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -15,7 +15,7 @@ const SubjectCard = ({ subject, isSelected, onClick }: SubjectCardProps) => {
       case "languages":
         return <Languages />;
       case "flask":
-        return <Flask />;
+        return <Beaker />;
       case "calculator":
         return <Calculator />;
       case "book":
