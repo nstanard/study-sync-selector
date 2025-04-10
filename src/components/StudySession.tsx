@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { FlashCard as FlashCardType, Subject } from "../types";
@@ -20,15 +20,23 @@ const StudySession = ({
   onFinish,
 }: StudySessionProps) => {
   // Get all cards from selected subjects
-  const allCards = subjects
-    .filter(subject => selectedSubjects.includes(subject.id))
-    .flatMap(subject => subject.cards);
-
+  const [cards, setCards] = useState<FlashCardType[]>([]);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [studiedCards, setStudiedCards] = useState<string[]>([]);
 
-  const currentCard = allCards[currentCardIndex];
-  const totalCards = allCards.length;
+  // Initialize randomized cards on component mount
+  useEffect(() => {
+    const allCards = subjects
+      .filter(subject => selectedSubjects.includes(subject.id))
+      .flatMap(subject => subject.cards);
+    
+    // Randomize the order of cards using Fisher-Yates shuffle algorithm
+    const shuffledCards = [...allCards].sort(() => Math.random() - 0.5);
+    setCards(shuffledCards);
+  }, [subjects, selectedSubjects]);
+
+  const currentCard = cards[currentCardIndex];
+  const totalCards = cards.length;
   const remainingCards = totalCards - studiedCards.length;
 
   const handleCardResponse = (difficulty: 'forgot' | 'hard' | 'good' | 'easy') => {
@@ -40,7 +48,7 @@ const StudySession = ({
       setStudiedCards([...studiedCards, currentCard.id]);
       
       // Move to next card or finish if done
-      if (currentCardIndex < allCards.length - 1) {
+      if (currentCardIndex < cards.length - 1) {
         setCurrentCardIndex(currentCardIndex + 1);
       } else {
         onFinish();
