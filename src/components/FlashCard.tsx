@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FlashCard as FlashCardType } from "../types";
@@ -12,6 +12,12 @@ interface FlashCardProps {
 const FlashCard = ({ card, onResponse }: FlashCardProps) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [showAnswers, setShowAnswers] = useState(false);
+
+  // Reset flip state when card changes
+  useEffect(() => {
+    setIsFlipped(false);
+    setShowAnswers(false);
+  }, [card.id]);
 
   const flipCard = () => {
     setIsFlipped(!isFlipped);
